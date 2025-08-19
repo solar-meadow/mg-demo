@@ -13,76 +13,60 @@
         --muted: #64748b;
         --radius: 12px;
       }
-
       body {
         font-family: "Segoe UI", Roboto, sans-serif;
         background: var(--bg);
         color: var(--text);
         padding: 40px;
-        margin: 0;
       }
-
       h2 {
-        font-size: 24px;
+        font-size: 22px;
         margin-bottom: 20px;
       }
-
       h3 {
         margin: 16px 0 12px;
         font-size: 18px;
       }
-
       .card {
         background: var(--card-bg);
         border-radius: var(--radius);
         padding: 20px;
         margin-bottom: 20px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-        transition: transform 0.2s ease;
       }
-
-      .service,
-      .slot,
-      .trainer-option {
+      .option {
         background: var(--card-bg);
         border-radius: var(--radius);
-        padding: 15px 20px;
-        margin: 10px 0;
+        padding: 12px 16px;
+        margin: 8px 0;
         cursor: pointer;
         border: 1px solid #e2e8f0;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        transition: all 0.2s ease;
+        transition: all 0.2s;
       }
-
-      .service:hover,
-      .slot:hover,
-      .trainer-option:hover {
-        transform: translateY(-2px);
+      .option:hover {
         background: #f0f6ff;
         border-color: var(--primary);
       }
-
+      .muted {
+        color: var(--muted);
+        font-size: 14px;
+      }
       button {
         background: var(--primary);
         color: white;
         border: none;
         border-radius: var(--radius);
-        padding: 10px 18px;
-        margin-top: 12px;
-        font-size: 15px;
+        padding: 10px 16px;
+        margin-top: 10px;
         cursor: pointer;
-        transition: background 0.2s ease, transform 0.15s ease;
+        font-size: 15px;
       }
-
       button:hover {
         background: var(--primary-hover);
-        transform: translateY(-1px);
       }
-
       .modal {
         display: none;
         position: fixed;
-        z-index: 100;
         left: 0;
         top: 0;
         width: 100%;
@@ -90,90 +74,87 @@
         background: rgba(0, 0, 0, 0.4);
         justify-content: center;
         align-items: center;
-        animation: fadeIn 0.3s ease;
       }
-
       .modal-content {
-        background: var(--card-bg);
-        border-radius: var(--radius);
+        background: white;
         padding: 25px;
-        min-width: 340px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-        animation: slideUp 0.3s ease;
-      }
-
-      input[type="datetime-local"] {
-        margin: 12px 0;
-        padding: 8px;
-        width: 100%;
         border-radius: var(--radius);
-        border: 1px solid #cbd5e1;
-        font-size: 14px;
+        min-width: 360px;
+        max-width: 600px;
       }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
       }
-
-      @keyframes slideUp {
-        from {
-          transform: translateY(30px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
+      th,
+      td {
+        border: 1px solid #e2e8f0;
+        padding: 8px;
+        text-align: left;
       }
-
-      .muted {
-        font-size: 14px;
-        color: var(--muted);
+      th {
+        background: #f1f5f9;
       }
     </style>
   </head>
   <body>
-    <h2>Профиль клиента: Иван Иванов</h2>
+    <h2>Профиль клиента: Иван</h2>
 
     <div class="card">
       <h3>Услуги</h3>
-      <div
-        class="service"
-        onclick="openService('10 мини-групповых тренировок')"
-      >
-        10 мини-групповых тренировок <br />
-        <span class="muted">Осталось: <span id="remaining">10</span></span>
+      <div class="option" onclick="openService(services[0])">
+        <b>10 мини групп</b><br />
+        <span class="muted"
+          >Категория: Тренажерный зал | Уровень: тренер | Осталось:
+          <span id="remain0">10</span></span
+        >
+      </div>
+      <div class="option" onclick="openService(services[1])">
+        <b>10 мини групп детский</b><br />
+        <span class="muted"
+          >Категория: Kids | Уровень: мастер-тренер | Осталось:
+          <span id="remain1">8</span></span
+        >
       </div>
     </div>
 
-    <!-- Модальное окно -->
+    <!-- Модалка -->
     <div id="modal" class="modal">
       <div class="modal-content">
-        <h3>Списание тренировки</h3>
-        <div id="step1">
+        <h3 id="modalTitle">Списание тренировки</h3>
+
+        <!-- step child (только для Kids) -->
+        <div id="stepChild" style="display: none">
+          <p>Выберите ребёнка:</p>
+          <div id="childList"></div>
+        </div>
+
+        <!-- step 1 -->
+        <div id="step1" style="display: none">
           <p>Выберите тренера:</p>
-          <div class="trainer-option" onclick="chooseTrainer('Анна Петрова')">
+          <div class="option" onclick="chooseTrainer('Анна Петрова')">
             👩 Анна Петрова
           </div>
-          <div class="trainer-option" onclick="chooseTrainer('Сергей Смирнов')">
+          <div class="option" onclick="chooseTrainer('Сергей Смирнов')">
             👨 Сергей Смирнов
           </div>
         </div>
+
+        <!-- step 2 -->
         <div id="step2" style="display: none">
-          <p>Выберите тайм-слот или создайте новый:</p>
+          <p>Выберите тайм-слот:</p>
           <div id="slots"></div>
           <input type="datetime-local" id="newSlot" />
           <button onclick="createSlot()">Создать слот</button>
         </div>
+
+        <!-- step 3 -->
         <div id="step3" style="display: none">
           <p id="confirmText"></p>
-          <button onclick="confirmBooking()">✅ Подтвердить списание</button>
+          <button onclick="confirmBooking()">✅ Подтвердить</button>
         </div>
+
         <button
           style="background: #e2e8f0; color: #1e293b"
           onclick="closeModal()"
@@ -184,37 +165,88 @@
     </div>
 
     <script>
-      let selectedService = null;
-      let selectedTrainer = null;
-      let selectedSlot = null;
+      // услуги
+      const services = [
+        {
+          title: "10 мини групп",
+          category: "Тренажерный зал",
+          level: "тренер",
+          remaining: 10,
+        },
+        {
+          title: "10 мини групп детский",
+          category: "Kids",
+          level: "мастер-тренер",
+          remaining: 8,
+        },
+      ];
+
+      // дети
+      const children = ["Петя", "Маша"];
+
+      // тайм-слоты
       let slotsData = {
         "Анна Петрова": [
-          { date: "2025-08-20 10:00", clients: 2, limit: 5 },
-          { date: "2025-08-21 18:00", clients: 4, limit: 8 },
+          { date: "2025-08-20 10:00", clients: ["Иван"], limit: 5 },
+          { date: "2025-08-21 18:00", clients: ["Маша"], limit: 8 },
         ],
-        "Сергей Смирнов": [{ date: "2025-08-22 12:00", clients: 1, limit: 6 }],
+        "Сергей Смирнов": [
+          { date: "2025-08-22 12:00", clients: ["Петя"], limit: 6 },
+        ],
       };
 
-      function openService(serviceName) {
-        selectedService = serviceName;
+      let currentService = null,
+        currentChild = null,
+        currentTrainer = null,
+        currentSlot = null;
+
+      function openService(service) {
+        currentService = service;
         document.getElementById("modal").style.display = "flex";
-        document.getElementById("step1").style.display = "block";
+        // если Kids → сначала выбор ребёнка
+        if (service.category === "Kids") {
+          document.getElementById("stepChild").style.display = "block";
+          document.getElementById("step1").style.display = "none";
+          let list = document.getElementById("childList");
+          list.innerHTML = "";
+          children.forEach((ch) => {
+            let div = document.createElement("div");
+            div.className = "option";
+            div.innerText = ch;
+            div.onclick = () => selectChild(ch);
+            list.appendChild(div);
+          });
+        } else {
+          document.getElementById("stepChild").style.display = "none";
+          document.getElementById("step1").style.display = "block";
+        }
         document.getElementById("step2").style.display = "none";
         document.getElementById("step3").style.display = "none";
       }
 
+      function selectChild(ch) {
+        currentChild = ch;
+        document.getElementById("stepChild").style.display = "none";
+        document.getElementById("step1").style.display = "block";
+      }
+
       function chooseTrainer(trainer) {
-        selectedTrainer = trainer;
-        let slotsContainer = document.getElementById("slots");
-        slotsContainer.innerHTML = "";
+        currentTrainer = trainer;
+        let cont = document.getElementById("slots");
+        cont.innerHTML = "";
         slotsData[trainer].forEach((slot) => {
-          if (slot.clients < slot.limit) {
-            let div = document.createElement("div");
-            div.className = "slot";
-            div.innerHTML = `📅 ${slot.date} <br>
-            <span class="muted">Записано: ${slot.clients}/${slot.limit}</span>`;
-            div.onclick = () => selectSlot(slot);
-            slotsContainer.appendChild(div);
+          if (slot.clients.length < slot.limit) {
+            let table = document.createElement("table");
+            table.innerHTML = `<tr><th>Дата</th><th>Записано</th><th>Лимит</th></tr>
+                         <tr><td>${slot.date}</td><td>${
+              slot.clients.join(", ") || "—"
+            }</td>
+                         <td>${slot.clients.length}/${slot.limit}</td></tr>`;
+            let wrap = document.createElement("div");
+            wrap.className = "option";
+            wrap.appendChild(table);
+            wrap.onclick = () => selectSlot(slot);
+            cont.appendChild(wrap);
           }
         });
         document.getElementById("step1").style.display = "none";
@@ -222,30 +254,40 @@
       }
 
       function selectSlot(slot) {
-        selectedSlot = slot;
+        currentSlot = slot;
+        let who = currentService.category === "Kids" ? currentChild : "Иван";
         document.getElementById(
           "confirmText"
-        ).innerText = `Клиент будет записан к тренеру ${selectedTrainer} на ${slot.date}`;
+        ).innerText = `${who} будет записан к ${currentTrainer} на ${slot.date}`;
         document.getElementById("step2").style.display = "none";
         document.getElementById("step3").style.display = "block";
       }
 
       function createSlot() {
-        let newSlotValue = document.getElementById("newSlot").value;
-        if (!newSlotValue) return alert("Укажите дату и время");
-        selectedSlot = { date: newSlotValue, clients: 0, limit: 8 };
+        let val = document.getElementById("newSlot").value;
+        if (!val) return alert("Укажите дату/время");
+        currentSlot = { date: val, clients: [], limit: 8 };
+        let who = currentService.category === "Kids" ? currentChild : "Иван";
         document.getElementById(
           "confirmText"
-        ).innerText = `Создан новый слот. Клиент будет записан к ${selectedTrainer} на ${newSlotValue}`;
+        ).innerText = `Создан новый слот. ${who} будет записан к ${currentTrainer} на ${val}`;
         document.getElementById("step2").style.display = "none";
         document.getElementById("step3").style.display = "block";
       }
 
       function confirmBooking() {
-        let remaining = document.getElementById("remaining");
-        let newValue = parseInt(remaining.innerText) - 1;
-        remaining.innerText = newValue;
-        alert("✅ Тренировка успешно списана и клиент записан в слот!");
+        currentService.remaining--;
+        let who = currentService.category === "Kids" ? currentChild : "Иван";
+        currentSlot.clients.push(who);
+        // обновляем счётчик
+        if (currentService.title.includes("детский")) {
+          document.getElementById("remain1").innerText =
+            currentService.remaining;
+        } else {
+          document.getElementById("remain0").innerText =
+            currentService.remaining;
+        }
+        alert("✅ Списание успешно! Клиент добавлен в слот");
         closeModal();
       }
 
